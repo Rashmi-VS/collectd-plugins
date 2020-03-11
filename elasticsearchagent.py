@@ -76,7 +76,8 @@ class ElasticsearchStats(object):
             if isinstance(self.es, ESearch):
                 return self.es.ping()
         except Exception as e:
-            collectd.error("Plugin elasticsearch: Error in getting ping for Elasticsearch %s due to %s" % (str(self.es), str(e)))
+            collectd.error(
+                "Plugin elasticsearch: Error in getting ping for Elasticsearch %s due to %s" % (str(self.es), str(e)))
             return False
 
     def check_master(self, node_id):
@@ -109,7 +110,8 @@ class ElasticsearchStats(object):
             single_node_stats = {}
             nodes_list = stats['nodes'].keys()
         except Exception as err:
-            collectd.error("Plugin elasticsearch: Plugin elasticsearch: Error in collecting node stats due to %s" % str(err))
+            collectd.error(
+                "Plugin elasticsearch: Plugin elasticsearch: Error in collecting node stats due to %s" % str(err))
 
         roles_list = []
         roles = ''
@@ -118,22 +120,21 @@ class ElasticsearchStats(object):
             roles = (",".join(roles_list)).encode('utf8')
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting node roles for node_id %s : '
-                              '%s' % (node_id, kerr.message))
-
+                           '%s' % (node_id, kerr.message))
 
         document_count = None
         try:
             document_count = stats['nodes'][node_id]['indices']['docs']['count']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting document count for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         store_size_in_bytes = None
         try:
             store_size_in_bytes = stats['nodes'][node_id]['indices']['store']['size_in_bytes']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting store size for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
         try:
             store_size_in_mb = round(self.conv_b_to_mb(float(store_size_in_bytes)), 2)
         except Exception as err:
@@ -145,18 +146,19 @@ class ElasticsearchStats(object):
             cache_size = stats['nodes'][node_id]['indices']['query_cache']['cache_size']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting cache size for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         field_data_memory_size = None
         try:
             field_data_memory_size = stats['nodes'][node_id]['indices']['fielddata']['memory_size_in_bytes']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting field data memory size for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
         try:
             field_data_memory_size_in_mb = round(self.conv_b_to_mb(float(field_data_memory_size)), 2)
         except Exception as err:
-            collectd.error('Plugin elasticsearch: Error in converting field_data_memory_size into mb due to %s' % str(err))
+            collectd.error(
+                'Plugin elasticsearch: Error in converting field_data_memory_size into mb due to %s' % str(err))
             field_data_memory_size_in_mb = 0.0
 
         field_data_evictions = None
@@ -164,32 +166,33 @@ class ElasticsearchStats(object):
             field_data_evictions = stats['nodes'][node_id]['indices']['fielddata']['evictions']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting field data evictions for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         segment_count = None
         try:
             segment_count = stats['nodes'][node_id]['indices']['segments']['count']
         except KeyError as kerr:
-                collectd.error('Plugin elasticsearch: Error getting segment count for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+            collectd.error('Plugin elasticsearch: Error getting segment count for node_id %s : '
+                           '%s' % (node_id, kerr.message))
 
         os_cpu_percent = None
         try:
             os_cpu_percent = stats['nodes'][node_id]['os']['cpu']['percent']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting os_cpu_percent for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         os_mem_total_in_bytes = None
         try:
             os_mem_total_in_bytes = stats['nodes'][node_id]['os']['mem']['total_in_bytes']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting os_mem_total_in_bytes for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
         try:
             os_mem_total = round(self.conv_b_to_mb(float(os_mem_total_in_bytes)), 2)
         except Exception as err:
-            collectd.error('Plugin elasticsearch: Error in converting os_mem_total_in_bytes into mb due to %s' % str(err))
+            collectd.error(
+                'Plugin elasticsearch: Error in converting os_mem_total_in_bytes into mb due to %s' % str(err))
             os_mem_total = 0.0
 
         os_mem_free_in_bytes = None
@@ -197,12 +200,13 @@ class ElasticsearchStats(object):
             os_mem_free_in_bytes = stats['nodes'][node_id]['os']['mem']['free_in_bytes']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting os_mem_free_in_bytes for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         try:
             os_mem_free = round(self.conv_b_to_mb(float(os_mem_free_in_bytes)), 2)
         except Exception as err:
-            collectd.error('Plugin elasticsearch: Error in converting os_mem_free_in_bytes into mb due to %s' % str(err))
+            collectd.error(
+                'Plugin elasticsearch: Error in converting os_mem_free_in_bytes into mb due to %s' % str(err))
             os_mem_free = 0.0
 
         os_mem_used_in_bytes = None
@@ -210,12 +214,13 @@ class ElasticsearchStats(object):
             os_mem_used_in_bytes = stats['nodes'][node_id]['os']['mem']['used_in_bytes']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting os_mem_used_in_bytes for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         try:
             os_mem_used = round(self.conv_b_to_mb(float(os_mem_used_in_bytes)), 2)
         except Exception as err:
-            collectd.error('Plugin elasticsearch: Error in converting os_mem_used_in_bytes into mb due to %s' % str(err))
+            collectd.error(
+                'Plugin elasticsearch: Error in converting os_mem_used_in_bytes into mb due to %s' % str(err))
             os_mem_used = 0.0
 
         os_mem_free_percent = None
@@ -223,148 +228,148 @@ class ElasticsearchStats(object):
             os_mem_free_percent = stats['nodes'][node_id]['os']['mem']['free_percent']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting os_mem_free_percent for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         os_mem_used_percent = None
         try:
             os_mem_used_percent = stats['nodes'][node_id]['os']['mem']['used_percent']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting os_mem_used_percent for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         process_open_fds = None
         try:
             process_open_fds = stats['nodes'][node_id]['process']['open_file_descriptors']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting process_open_fds for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         process_cpu_percent = None
         try:
             process_cpu_percent = stats['nodes'][node_id]['process']['cpu']['percent']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting process_cpu_percent for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         io_stats_total_operations = None
         try:
             io_stats_total_operations = stats['nodes'][node_id]['fs']['io_stats']['total']['operations']
         except KeyError as kerr:
-                collectd.error('Plugin elasticsearch: Error getting io_stats_total_operations for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+            collectd.error('Plugin elasticsearch: Error getting io_stats_total_operations for node_id %s : '
+                           '%s' % (node_id, kerr.message))
 
         io_stats_total_read_operations = None
         try:
             io_stats_total_read_operations = stats['nodes'][node_id]['fs']['io_stats']['total']['read_operations']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting io_stats_total_read_operations for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         io_stats_total_write_operations = None
         try:
             io_stats_total_write_operations = stats['nodes'][node_id]['fs']['io_stats']['total']['write_operations']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting io_stats_total_write_operations for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         io_stats_total_read_kb = None
         try:
             io_stats_total_read_kb = stats['nodes'][node_id]['fs']['io_stats']['total']['read_kilobytes']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting io_stats_total_read_kb for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         io_stats_total_write_kb = None
         try:
             io_stats_total_write_kb = stats['nodes'][node_id]['fs']['io_stats']['total']['write_kilobytes']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting io_stats_total_write_kb for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         server_open = None
         try:
             server_open = stats['nodes'][node_id]['transport']['server_open']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting server_open for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         trans_rx_count = None
         try:
             trans_rx_count = stats['nodes'][node_id]['transport']['rx_count']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting trans_rx_count for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         trans_rx_size_in_bytes = None
         try:
             trans_rx_size_in_bytes = stats['nodes'][node_id]['transport']['rx_size_in_bytes']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting trans_rx_size_in_bytes for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         trans_tx_count = None
         try:
             trans_tx_count = stats['nodes'][node_id]['transport']['tx_count']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting trans_tx_count for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         trans_tx_size_in_bytes = None
         try:
             trans_tx_size_in_bytes = stats['nodes'][node_id]['transport']['tx_size_in_bytes']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting trans_tx_size_in_bytes for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         http_current_open_conn = None
         try:
             http_current_open_conn = stats['nodes'][node_id]['http']['current_open']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting http_current_open_conn for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         http_total_open_conn = None
         try:
             http_total_open_conn = stats['nodes'][node_id]['http']['total_opened']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting http_total_open_conn for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         brkers_limit_size_in_bytes = None
         try:
             brkers_limit_size_in_bytes = stats['nodes'][node_id]['breakers']['fielddata']['limit_size_in_bytes']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting brkers_limit_size_in_bytes for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         brkers_estimated_size_in_bytes = None
         try:
             brkers_estimated_size_in_bytes = stats['nodes'][node_id]['breakers']['fielddata']['limit_size_in_bytes']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting brkers_estimated_size_in_bytes for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         brkers_overhead = None
         try:
             brkers_overhead = stats['nodes'][node_id]['breakers']['fielddata']['overhead']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting brkers_overhead for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         brkers_tripped = None
         try:
             brkers_tripped = stats['nodes'][node_id]['breakers']['fielddata']['tripped']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting brkers_tripped for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         jvm_heap_usage_in_bytes = None
         try:
             jvm_heap_usage_in_bytes = stats['nodes'][node_id]['jvm'] \
-                    ['mem']['heap_used_in_bytes']
+                ['mem']['heap_used_in_bytes']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting jvm heap usage for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
         try:
             jvm_heap_usage = round(self.conv_b_to_mb(float(jvm_heap_usage_in_bytes)), 2)
         except Exception as err:
@@ -374,18 +379,18 @@ class ElasticsearchStats(object):
         jvm_heap_usage_percent = None
         try:
             jvm_heap_usage_percent = stats['nodes'][node_id]['jvm'] \
-                    ['mem']['heap_used_percent']
+                ['mem']['heap_used_percent']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting jvm heap usage percent for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         jvm_heap_committed_in_bytes = None
         try:
             jvm_heap_committed_in_bytes = stats['nodes'][node_id]['jvm'] \
-                    ['mem']['heap_committed_in_bytes']
+                ['mem']['heap_committed_in_bytes']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting jvm heap committed for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         try:
             jvm_heap_committed = round(self.conv_b_to_mb(float(jvm_heap_committed_in_bytes)), 2)
@@ -396,10 +401,10 @@ class ElasticsearchStats(object):
         jvm_heap_max_in_bytes = None
         try:
             jvm_heap_max_in_bytes = stats['nodes'][node_id]['jvm'] \
-                    ['mem']['heap_max_in_bytes']
+                ['mem']['heap_max_in_bytes']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting jvm heap max for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
         try:
             jvm_heap_max = round(self.conv_b_to_mb(float(jvm_heap_max_in_bytes)), 2)
         except Exception as err:
@@ -409,10 +414,10 @@ class ElasticsearchStats(object):
         jvm_non_heap_used_in_bytes = None
         try:
             jvm_non_heap_used_in_bytes = stats['nodes'][node_id]['jvm'] \
-                    ['mem']['non_heap_used_in_bytes']
+                ['mem']['non_heap_used_in_bytes']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting jvm non heap used for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
         try:
             jvm_non_heap_usage = round(self.conv_b_to_mb(float(jvm_non_heap_used_in_bytes)), 2)
         except Exception as err:
@@ -422,10 +427,10 @@ class ElasticsearchStats(object):
         jvm_non_heap_committed_in_bytes = None
         try:
             jvm_non_heap_committed_in_bytes = stats['nodes'][node_id]['jvm'] \
-                    ['mem']['non_heap_committed_in_bytes']
+                ['mem']['non_heap_committed_in_bytes']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting jvm non heap committed for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
         try:
             jvm_non_heap_committed = round(self.conv_b_to_mb(float(jvm_non_heap_committed_in_bytes)), 2)
         except Exception as err:
@@ -435,10 +440,10 @@ class ElasticsearchStats(object):
         jvm_pools_young_used_in_bytes = None
         try:
             jvm_pools_young_used_in_bytes = stats['nodes'][node_id]['jvm'] \
-                    ['mem']['pools']['young']['used_in_bytes']
+                ['mem']['pools']['young']['used_in_bytes']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting jvm pools young usage for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
         try:
             jvm_pools_young_usage = round(self.conv_b_to_mb(float(jvm_pools_young_used_in_bytes)), 2)
         except Exception as err:
@@ -458,26 +463,26 @@ class ElasticsearchStats(object):
         jvm_pools_young_peak_used = None
         try:
             jvm_pools_young_peak_used = stats['nodes'][node_id]['jvm'] \
-                    ['mem']['pools']['young']['peak_used_in_bytes']
+                ['mem']['pools']['young']['peak_used_in_bytes']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting jvm pools young peak usage for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
         try:
             jvm_pools_young_peak_usage = round(self.conv_b_to_mb(float(jvm_pools_young_peak_used)), 2)
         except Exception as err:
             collectd.error('Plugin elasticsearch: Error in converting jvm_pools_young_peak_usage due to %s' % str(err))
             jvm_pools_young_peak_usage = 0.0
 
-          # jvm_pools_young_peak_max_usage = None
-            # try:
-            #    jvm_pools_young_peak_max_usage = stats['nodes'][node_id]['jvm'] \
-            #                                        ['mem']['pools']['young']['peak_max_in_bytes']
-            # except KeyError as kerr:
-            #    collectd.error('Plugin elasticsearch: Error getting jvm pools young peak max usage for node_id %s : '
-            #                  '%s' % (node_id, kerr.message))
+        # jvm_pools_young_peak_max_usage = None
+        # try:
+        #    jvm_pools_young_peak_max_usage = stats['nodes'][node_id]['jvm'] \
+        #                                        ['mem']['pools']['young']['peak_max_in_bytes']
+        # except KeyError as kerr:
+        #    collectd.error('Plugin elasticsearch: Error getting jvm pools young peak max usage for node_id %s : '
+        #                  '%s' % (node_id, kerr.message))
 
-            # if jvm_pools_young_peak_max_usage:
-            #    jvm_pools_young_peak_max = round(self.conv_b_to_mb(float(jvm_pools_young_peak_max_usage)), 2)
+        # if jvm_pools_young_peak_max_usage:
+        #    jvm_pools_young_peak_max = round(self.conv_b_to_mb(float(jvm_pools_young_peak_max_usage)), 2)
 
         jvm_pools_survivor_used_in_bytes = None
 
@@ -486,7 +491,7 @@ class ElasticsearchStats(object):
                 ['mem']['pools']['survivor']['used_in_bytes']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting jvm pools survivor usage for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
         try:
             jvm_pools_survivor_usage = round(self.conv_b_to_mb(float(jvm_pools_survivor_used_in_bytes)), 2)
         except Exception as err:
@@ -510,11 +515,12 @@ class ElasticsearchStats(object):
                 ['mem']['pools']['survivor']['peak_used_in_bytes']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting jvm pools survivor peak usage for node_id %s : '
-                          '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
         try:
             jvm_pools_survivor_peak_usage = round(self.conv_b_to_mb(float(jvm_pools_survivor_peak_used)), 2)
         except Exception as err:
-            collectd.error('Plugin elasticsearch: Error in converting jvm_pools_survivor_peak_usage due to %s' % str(err))
+            collectd.error(
+                'Plugin elasticsearch: Error in converting jvm_pools_survivor_peak_usage due to %s' % str(err))
             jvm_pools_survivor_peak_usage = 0.0
 
             # jvm_pools_survivor_peak_max_usage = None
@@ -534,7 +540,7 @@ class ElasticsearchStats(object):
                 ['mem']['pools']['old']['used_in_bytes']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting jvm pools old usage for node_id %s : '
-                          '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
         try:
             jvm_pools_old_usage = round(self.conv_b_to_mb(float(jvm_pools_old_used_in_bytes)), 2)
         except Exception as err:
@@ -558,7 +564,7 @@ class ElasticsearchStats(object):
                 ['mem']['pools']['old']['peak_used_in_bytes']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting jvm pools old peak usage for node_id %s : '
-                          '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
         try:
             jvm_pools_old_peak_usage = round(self.conv_b_to_mb(float(jvm_pools_old_peak_used)), 2)
         except Exception as err:
@@ -581,7 +587,7 @@ class ElasticsearchStats(object):
             jvm_threads = stats['nodes'][node_id]['jvm']['threads']['count']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting jvm thread count for node_id %s : '
-                          '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         jvm_gc = None
         try:
@@ -589,7 +595,7 @@ class ElasticsearchStats(object):
                 ['collectors']['old']['collection_count']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting jvm garbage collection count for node_id %s: %s',
-                              node_id, kerr.message)
+                           node_id, kerr.message)
 
         jvm_gct = None
         try:
@@ -597,11 +603,7 @@ class ElasticsearchStats(object):
                 ['collectors']['old']['collection_time_in_millis']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting jvm garbage collection time for node_id %s: %s',
-                          node_id, kerr.message)
-
-            # Jvm garbage collection time in seconds
-        if jvm_gct:
-            jvm_gct = round(float(jvm_gct) / 1000, 2)
+                           node_id, kerr.message)
 
         jvm_young_gc = None
         try:
@@ -609,7 +611,7 @@ class ElasticsearchStats(object):
                 ['collectors']['young']['collection_count']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting jvm young garbage collection count for node_id %s: %s',
-                          node_id, kerr.message)
+                           node_id, kerr.message)
 
         jvm_young_gct = None
         try:
@@ -617,136 +619,133 @@ class ElasticsearchStats(object):
                 ['collectors']['young']['collection_time_in_millis']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting jvm young garbage collection time for node_id %s: %s',
-                              node_id, kerr.message)
+                           node_id, kerr.message)
 
-            # Jvm young garbage collection time in seconds
-        if jvm_young_gct:
-            jvm_young_gct = round(float(jvm_young_gct) / 1000, 2)
-            thread_pool_get_threads = None
+        thread_pool_get_threads = None
         try:
             thread_pool_get_threads = stats['nodes'][node_id]['thread_pool']['get']['threads']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting thread pool get threads count for node_id %s : '
-                          '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         thread_pool_get_queue = None
         try:
             thread_pool_get_queue = stats['nodes'][node_id]['thread_pool']['get']['queue']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting thread pool get queue count for node_id %s : '
-                          '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         thread_pool_get_active = None
         try:
             thread_pool_get_active = stats['nodes'][node_id]['thread_pool']['get']['active']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting thread pool get active count for node_id %s : '
-                          '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         thread_pool_get_rejected = None
         try:
             thread_pool_get_rejected = stats['nodes'][node_id]['thread_pool']['get']['rejected']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting thread pool get rejected count for node_id %s : '
-                          '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         thread_pool_get_largest = None
         try:
             thread_pool_get_largest = stats['nodes'][node_id]['thread_pool']['get']['largest']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting thread pool get largest count for node_id %s : '
-                          '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         thread_pool_get_completed = None
         try:
             thread_pool_get_completed = stats['nodes'][node_id]['thread_pool']['get']['completed']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting thread pool get completed count for node_id %s : '
-                          '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         thread_pool_index_threads = None
         try:
             thread_pool_index_threads = stats['nodes'][node_id]['thread_pool']['index']['threads']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting thread pool index threads count for node_id %s : '
-                          '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         thread_pool_index_queue = None
         try:
             thread_pool_index_queue = stats['nodes'][node_id]['thread_pool']['index']['queue']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting thread pool index queue count for node_id %s : '
-                          '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         thread_pool_index_active = None
         try:
             thread_pool_index_active = stats['nodes'][node_id]['thread_pool']['index']['active']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting thread pool index active count for node_id %s : '
-                          '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         thread_pool_index_rejected = None
         try:
             thread_pool_index_rejected = stats['nodes'][node_id]['thread_pool']['index']['rejected']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting thread pool index rejected count for node_id %s : '
-                          '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         thread_pool_index_largest = None
         try:
             thread_pool_index_largest = stats['nodes'][node_id]['thread_pool']['index']['largest']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting thread pool index largest count for node_id %s : '
-                          '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         thread_pool_index_completed = None
         try:
             thread_pool_index_completed = stats['nodes'][node_id]['thread_pool']['index']['completed']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting thread pool index completed count for node_id %s : '
-                          '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         thread_pool_search_threads = None
         try:
             thread_pool_search_threads = stats['nodes'][node_id]['thread_pool']['search']['threads']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting thread pool search threads count for node_id %s : '
-                          '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         thread_pool_search_queue = None
         try:
             thread_pool_search_queue = stats['nodes'][node_id]['thread_pool']['search']['queue']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting thread pool search queue count for node_id %s : '
-                          '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         thread_pool_search_active = None
         try:
             thread_pool_search_active = stats['nodes'][node_id]['thread_pool']['search']['active']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting thread pool search active count for node_id %s : '
-                              '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         thread_pool_search_rejected = None
         try:
             thread_pool_search_rejected = stats['nodes'][node_id]['thread_pool']['search']['rejected']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting thread pool search rejected count for node_id %s : '
-                          '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         thread_pool_search_largest = None
         try:
             thread_pool_search_largest = stats['nodes'][node_id]['thread_pool']['search']['largest']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting thread pool search largest count for node_id %s : '
-                          '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         thread_pool_search_completed = None
         try:
             thread_pool_search_completed = stats['nodes'][node_id]['thread_pool']['search']['completed']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting thread pool search completed count for node_id %s : '
-                          '%s' % (node_id, kerr.message))
+                           '%s' % (node_id, kerr.message))
 
         hits = None
         try:
@@ -769,14 +768,14 @@ class ElasticsearchStats(object):
             loaded_classes = stats['nodes'][node_id]['jvm']['classes']['total_loaded_count']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting count of total jvm loaded classes for node_id %s: %s'
-                          % (node_id, kerr.message))
+                           % (node_id, kerr.message))
 
         unloaded_classes = None
         try:
             unloaded_classes = stats['nodes'][node_id]['jvm']['classes']['total_unloaded_count']
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting count of total jvm unloaded classes for node_id %s: %s'
-                          % (node_id, kerr.message))
+                           % (node_id, kerr.message))
 
             # We need hit and miss count and jvm loaded and unloaded classes since our previous poll
         if 'nodeStats' in self.previousData and not self.pollCounter == 1:
@@ -791,14 +790,22 @@ class ElasticsearchStats(object):
                     jvm_gc_count = 0
                 self.previousData["nodeStats"]['node_jvm_gc_count'] = jvm_gc
 
+                jvm_gct_diff_sec = 0.0
                 jvm_gct_diff = jvm_gct - self.previousData["nodeStats"]['node_jvm_gct_diff']
                 if jvm_gct_diff < 0:
-                    jvm_gct_diff = 0
+                    jvm_gct_diff_sec = 0
+                else:
+                    jvm_gct_diff_sec = round(float(jvm_gct_diff) / 1000, 2)
+
                 self.previousData["nodeStats"]['node_jvm_gct_diff'] = jvm_gct
 
+                jvm_young_gct_diff_sec = 0.0
                 jvm_young_gct_diff = jvm_young_gct - self.previousData["nodeStats"]['node_jvm_young_gct_diff']
                 if jvm_young_gct_diff < 0:
-                    jvm_young_gct_diff = 0
+                    jvm_young_gct_diff_sec = 0
+                else:
+                    jvm_young_gct_diff_sec = round(float(jvm_young_gct_diff) / 1000, 2)
+
                 self.previousData["nodeStats"]['node_jvm_young_gct_diff'] = jvm_young_gct
 
                 hit_count = hits - self.previousData["nodeStats"]['node_hit_count']
@@ -860,7 +867,8 @@ class ElasticsearchStats(object):
                 try:
                     rx_size = round(self.conv_b_to_mb(float(rx_size_in_bytes)), 2)
                 except Exception as err:
-                    collectd.error('Plugin elasticsearch: Error in converting rx_size_in_bytes into mb due to %s' % str(err))
+                    collectd.error(
+                        'Plugin elasticsearch: Error in converting rx_size_in_bytes into mb due to %s' % str(err))
                     rx_size = 0.0
 
                 tx_size_in_bytes = trans_tx_size_in_bytes - self.previousData["nodeStats"][
@@ -872,7 +880,8 @@ class ElasticsearchStats(object):
                 try:
                     tx_size = round(self.conv_b_to_mb(float(tx_size_in_bytes)), 2)
                 except Exception as err:
-                    collectd.error('Plugin elasticsearch: Error in converting tx_size_in_bytes into mb due to %s' % str(err))
+                    collectd.error(
+                        'Plugin elasticsearch: Error in converting tx_size_in_bytes into mb due to %s' % str(err))
                     tx_size = 0.0
 
                 brkers_lmt_size_in_bytes = brkers_limit_size_in_bytes - self.previousData["nodeStats"][
@@ -884,7 +893,9 @@ class ElasticsearchStats(object):
                 try:
                     brkers_limit_size = round(self.conv_b_to_mb(float(brkers_lmt_size_in_bytes)), 2)
                 except Exception as err:
-                    collectd.error('Plugin elasticsearch: Error in converting brkers_lmt_size_in_bytes into mb due to %s' % str(err))
+                    collectd.error(
+                        'Plugin elasticsearch: Error in converting brkers_lmt_size_in_bytes into mb due to %s' % str(
+                            err))
                     brkers_limit_size = 0.0
 
                 brkers_est_size_in_bytes = brkers_estimated_size_in_bytes - self.previousData["nodeStats"][
@@ -896,7 +907,9 @@ class ElasticsearchStats(object):
                 try:
                     brkers_estimated_size = round(self.conv_b_to_mb(float(brkers_est_size_in_bytes)), 2)
                 except Exception as err:
-                    collectd.error('Plugin elasticsearch: Error in converting brkers_est_size_in_bytes into mb due to %s' % str(err))
+                    collectd.error(
+                        'Plugin elasticsearch: Error in converting brkers_est_size_in_bytes into mb due to %s' % str(
+                            err))
                     brkers_estimated_size = 0.0
 
                 io_stats_tot_op = io_stats_total_operations - self.previousData["nodeStats"]["node_io_stats_tot_op"]
@@ -925,7 +938,8 @@ class ElasticsearchStats(object):
                 try:
                     io_stats_total_read = round(float(io_stats_tot_read_kb) / 1024.0, 2)
                 except Exception as err:
-                    collectd.error('Plugin elasticsearch: Error in converting io_stats_tot_read_kb into mb due to %s' % str(err))
+                    collectd.error(
+                        'Plugin elasticsearch: Error in converting io_stats_tot_read_kb into mb due to %s' % str(err))
                     io_stats_total_read = 0.0
 
                 io_stats_tot_write_kb = io_stats_total_write_kb - self.previousData["nodeStats"][
@@ -937,10 +951,12 @@ class ElasticsearchStats(object):
                 try:
                     io_stats_total_write = round(float(io_stats_tot_read_kb) / 1024.0, 2)
                 except Exception as err:
-                    collectd.error('Plugin elasticsearch: Error in converting io_stats_tot_write_kb into mb due to %s' % str(err))
+                    collectd.error(
+                        'Plugin elasticsearch: Error in converting io_stats_tot_write_kb into mb due to %s' % str(err))
                     io_stats_total_write = 0.0
             except Exception as err:
-                collectd.error("Plugin elasticsearch: Exception in finding difference value of node stats due to %s" % str(err))
+                collectd.error(
+                    "Plugin elasticsearch: Exception in finding difference value of node stats due to %s" % str(err))
         else:
             self.previousData.update({"nodeStats": {'node_id': node_id,
                                                     'node_hit_count': hits,
@@ -984,96 +1000,96 @@ class ElasticsearchStats(object):
             io_stats_tot_write_op = 0
             io_stats_total_read = 0.0
             io_stats_total_write = 0.0
-            jvm_young_gct_diff = 0
-            jvm_gct_diff = 0
+            jvm_young_gct_diff_sec = 0.0
+            jvm_gct_diff_sec = 0.0
             jvm_gc_count = 0
             jvm_young_gc_count = 0
 
         if hit_count or miss_count:
-            hit_ratio = (hit_count * 100)/(hit_count + miss_count)
+            hit_ratio = (hit_count * 100) / (hit_count + miss_count)
         else:
             hit_ratio = 0
         node_stats.update({"node_id": node_id, "_documentType": "nodeStats",
-                                                     'nodeName': str(self.node_name),
-                                                     'roles': roles,
-                                                     'docCount': int(document_count),
-                                                     'storeSize': store_size_in_mb,
-                                                     'cacheSize': cache_size,
-                                                     'segCount': int(segment_count),
-                                                     'fielddataMemorySize': field_data_memory_size_in_mb,
-                                                     'fielddataEvictions': field_data_evictions,
-                                                     'osCpuPercent': os_cpu_percent,
-                                                     'osTotMem': os_mem_total,
-                                                     'osFreeMem': os_mem_free,
-                                                     'osUsedMem': os_mem_used,
-                                                     'osFreeMemPercent': os_mem_free_percent,
-                                                     'osUsedMemPercent': os_mem_used_percent,
-                                                     'processOpenFds': process_open_fds,
-                                                     'processCpuPercent': process_cpu_percent,
-                                                     'ioTotOper': io_stats_tot_op,
-                                                     'ioTotReadOper': io_stats_tot_read_op,
-                                                     'ioTotWriteOper': io_stats_tot_write_op,
-                                                     'ioTotReadSize': io_stats_total_read,
-                                                     'ioTotWriteSize': io_stats_total_write,
-                                                     'serverOpen': server_open,
-                                                     'transRxCount': rx_count,
-                                                     'transRxSize': rx_size,
-                                                     'transTxCount': tx_count,
-                                                     'transTxSize': tx_size,
-                                                     'currOpenConn': http_current_open_conn,
-                                                     'totConnOpened': http_total_open_conn,
-                                                     'brkersLimitSize': brkers_limit_size,
-                                                     'brkersEstimatedSize': brkers_estimated_size,
-                                                     'brkersOverhead': brkers_overhead,
-                                                     'brkersTripped': brkers_tripped,
-                                                     'jvmHeapUsage': jvm_heap_usage,
-                                                     'jvmHeapUsagePercent': jvm_heap_usage_percent,
-                                                     'jvmHeapCommitted': jvm_heap_committed,
-                                                     'jvmHeapMax': jvm_heap_max,
-                                                     'jvmNonHeapUsage': jvm_non_heap_usage,
-                                                     'jvmNonHeapCommitted': jvm_non_heap_committed,
-                                                     'jvmPoolsYoungUsage': jvm_pools_young_usage,
-                                                     # 'jvmPoolsYoungMax': jvm_pools_young_max,
-                                                     'jvmPoolsYoungPeakUsage': jvm_pools_young_peak_usage,
-                                                     # 'jvmPoolsYoungPeakMax': jvm_pools_young_peak_max,
-                                                     'jvmPoolsSurvivorUsage': jvm_pools_survivor_usage,
-                                                     # 'jvmPoolsSurvivorMax': jvm_pools_survivor_max,
-                                                     'jvmPoolsSurvivorPeakUsage': jvm_pools_survivor_peak_usage,
-                                                     # 'jvmPoolsSurvivorPeakMax': jvm_pools_survivor_peak_max,
-                                                     'jvmPoolsOldUsage': jvm_pools_old_usage,
-                                                     # 'jvmPoolsOldMax': jvm_pools_old_max,
-                                                     'jvmPoolsOldPeakUsage': jvm_pools_old_peak_usage,
-                                                     # 'jvmPoolsOldPeakMax': jvm_pools_old_peak_max,
-                                                     'jvmThreads': int(jvm_threads),
-                                                     'jvmGc': int(jvm_gc_count),
-                                                     'jvmGct': jvm_gct_diff,
-                                                     'jvmYoungGc': int(jvm_young_gc_count),
-                                                     'jvmYoungGct': jvm_young_gct_diff,
-                                                     'jvmLoadedClasses': jvm_loaded_classes,
-                                                     'jvmUnloadedClasses': jvm_unloaded_classes,
-                                                     'threadPoolGetThreads': int(thread_pool_get_threads),
-                                                     'threadPoolGetQueue': int(thread_pool_get_queue),
-                                                     'threadPoolGetActive': int(thread_pool_get_active),
-                                                     'threadPoolGetRejected': int(thread_pool_get_rejected),
-                                                     'threadPoolGetLargest': int(thread_pool_get_largest),
-                                                     'threadPoolGetCompleted': get_thrd_pool_completed,
-                                                     'threadPoolIndexThreads': int(thread_pool_index_threads),
-                                                     'threadPoolIndexQueue': int(thread_pool_index_queue),
-                                                     'threadPoolIndexActive': int(thread_pool_index_active),
-                                                     'threadPoolIndexRejected': int(thread_pool_index_rejected),
-                                                     'threadPoolIndexLargest': int(thread_pool_index_largest),
-                                                     'threadPoolIndexCompleted': index_thrd_pool_completed,
-                                                     'threadPoolSearchThreads': int(thread_pool_search_threads),
-                                                     'threadPoolSearchQueue': int(thread_pool_search_queue),
-                                                     'threadPoolSearchActive': int(thread_pool_search_active),
-                                                     'threadPoolSearchRejected': int(thread_pool_search_rejected),
-                                                     'threadPoolSearchLargest': int(thread_pool_search_largest),
-                                                     'threadPoolSearchCompleted': search_thrd_pool_completed,
-                                                     'cacheHits': hit_count,
-                                                     'cacheMisses': miss_count,
-                                                     'cacheHitRatio': int(hit_ratio),
-                                                     })
-            #node_stats.update(single_node_stats)
+                           'nodeName': str(self.node_name),
+                           'roles': roles,
+                           'docCount': int(document_count),
+                           'storeSize': store_size_in_mb,
+                           'cacheSize': cache_size,
+                           'segCount': int(segment_count),
+                           'fielddataMemorySize': field_data_memory_size_in_mb,
+                           'fielddataEvictions': field_data_evictions,
+                           'osCpuPercent': os_cpu_percent,
+                           'osTotMem': os_mem_total,
+                           'osFreeMem': os_mem_free,
+                           'osUsedMem': os_mem_used,
+                           'osFreeMemPercent': os_mem_free_percent,
+                           'osUsedMemPercent': os_mem_used_percent,
+                           'processOpenFds': process_open_fds,
+                           'processCpuPercent': process_cpu_percent,
+                           'ioTotOper': io_stats_tot_op,
+                           'ioTotReadOper': io_stats_tot_read_op,
+                           'ioTotWriteOper': io_stats_tot_write_op,
+                           'ioTotReadSize': io_stats_total_read,
+                           'ioTotWriteSize': io_stats_total_write,
+                           'serverOpen': server_open,
+                           'transRxCount': rx_count,
+                           'transRxSize': rx_size,
+                           'transTxCount': tx_count,
+                           'transTxSize': tx_size,
+                           'currOpenConn': http_current_open_conn,
+                           'totConnOpened': http_total_open_conn,
+                           'brkersLimitSize': brkers_limit_size,
+                           'brkersEstimatedSize': brkers_estimated_size,
+                           'brkersOverhead': brkers_overhead,
+                           'brkersTripped': brkers_tripped,
+                           'jvmHeapUsage': jvm_heap_usage,
+                           'jvmHeapUsagePercent': jvm_heap_usage_percent,
+                           'jvmHeapCommitted': jvm_heap_committed,
+                           'jvmHeapMax': jvm_heap_max,
+                           'jvmNonHeapUsage': jvm_non_heap_usage,
+                           'jvmNonHeapCommitted': jvm_non_heap_committed,
+                           'jvmPoolsYoungUsage': jvm_pools_young_usage,
+                           # 'jvmPoolsYoungMax': jvm_pools_young_max,
+                           'jvmPoolsYoungPeakUsage': jvm_pools_young_peak_usage,
+                           # 'jvmPoolsYoungPeakMax': jvm_pools_young_peak_max,
+                           'jvmPoolsSurvivorUsage': jvm_pools_survivor_usage,
+                           # 'jvmPoolsSurvivorMax': jvm_pools_survivor_max,
+                           'jvmPoolsSurvivorPeakUsage': jvm_pools_survivor_peak_usage,
+                           # 'jvmPoolsSurvivorPeakMax': jvm_pools_survivor_peak_max,
+                           'jvmPoolsOldUsage': jvm_pools_old_usage,
+                           # 'jvmPoolsOldMax': jvm_pools_old_max,
+                           'jvmPoolsOldPeakUsage': jvm_pools_old_peak_usage,
+                           # 'jvmPoolsOldPeakMax': jvm_pools_old_peak_max,
+                           'jvmThreads': int(jvm_threads),
+                           'jvmGc': int(jvm_gc_count),
+                           'jvmGct': jvm_gct_diff_sec,
+                           'jvmYoungGc': int(jvm_young_gc_count),
+                           'jvmYoungGct': jvm_young_gct_diff_sec,
+                           'jvmLoadedClasses': jvm_loaded_classes,
+                           'jvmUnloadedClasses': jvm_unloaded_classes,
+                           'threadPoolGetThreads': int(thread_pool_get_threads),
+                           'threadPoolGetQueue': int(thread_pool_get_queue),
+                           'threadPoolGetActive': int(thread_pool_get_active),
+                           'threadPoolGetRejected': int(thread_pool_get_rejected),
+                           'threadPoolGetLargest': int(thread_pool_get_largest),
+                           'threadPoolGetCompleted': get_thrd_pool_completed,
+                           'threadPoolIndexThreads': int(thread_pool_index_threads),
+                           'threadPoolIndexQueue': int(thread_pool_index_queue),
+                           'threadPoolIndexActive': int(thread_pool_index_active),
+                           'threadPoolIndexRejected': int(thread_pool_index_rejected),
+                           'threadPoolIndexLargest': int(thread_pool_index_largest),
+                           'threadPoolIndexCompleted': index_thrd_pool_completed,
+                           'threadPoolSearchThreads': int(thread_pool_search_threads),
+                           'threadPoolSearchQueue': int(thread_pool_search_queue),
+                           'threadPoolSearchActive': int(thread_pool_search_active),
+                           'threadPoolSearchRejected': int(thread_pool_search_rejected),
+                           'threadPoolSearchLargest': int(thread_pool_search_largest),
+                           'threadPoolSearchCompleted': search_thrd_pool_completed,
+                           'cacheHits': hit_count,
+                           'cacheMisses': miss_count,
+                           'cacheHitRatio': int(hit_ratio),
+                           })
+        # node_stats.update(single_node_stats)
         return node_stats
 
     def get_disk_stats(self):
@@ -1085,13 +1101,13 @@ class ElasticsearchStats(object):
             disk_details = elastic_search.allocation(node_id=self.node_name, format='json', bytes='mb')
         except ESException as es_err:
             collectd.error('Plugin elasticsearch: ElasticSearchExcpetion: Error collecting '
-                          'disk stats for node : %s due to %s' % (self.node_name, es_err.message))
+                           'disk stats for node : %s due to %s' % (self.node_name, es_err.message))
             return None
         try:
             uptime_details = elastic_search.nodes(format='json', h=['name', 'uptime'])
         except ESException as es_err:
             collectd.error('Plugin elasticsearch: ElasticSearchExcpetion: Error collecting '
-                          'uptime for node : %s due to %s' % (self.node_name, es_err.message))
+                           'uptime for node : %s due to %s' % (self.node_name, es_err.message))
         uptime = None
         if uptime_details:
             try:
@@ -1099,9 +1115,12 @@ class ElasticsearchStats(object):
                     if node_uptime["name"] == self.node_name:
                         uptime = node_uptime["uptime"]
             except Exception as err:
-                collectd.error('Plugin elasticsearch: Plugin elasticsearch: Error in getting uptime for node : %s due to %s' % (self.node_name, err.message))
+                collectd.error(
+                    'Plugin elasticsearch: Plugin elasticsearch: Error in getting uptime for node : %s due to %s' % (
+                    self.node_name, err.message))
         else:
-            collectd.error("Plugin elasticsearch: Plugin elasticsearch: No uptime stats found for node %s", self.node_name)
+            collectd.error("Plugin elasticsearch: Plugin elasticsearch: No uptime stats found for node %s",
+                           self.node_name)
 
         if disk_details:
             for disk_metrics in disk_details:
@@ -1110,71 +1129,72 @@ class ElasticsearchStats(object):
                     try:
                         disk_tot_mb = disk_metrics['disk.total']
                     except KeyError as kerr:
-                        collectd.error('Plugin elasticsearch: Plugin elasticsearch: Error getting disk_tot_mb for node %s '
-                                      ': %s' % (self.node_name, kerr.message))
+                        collectd.error(
+                            'Plugin elasticsearch: Plugin elasticsearch: Error getting disk_tot_mb for node %s '
+                            ': %s' % (self.node_name, kerr.message))
 
                     disk_tot = 0.0
                     try:
                         disk_tot = round(int(disk_tot_mb) / 1024.0, 2)
                     except Exception as err:
                         collectd.error('Plugin elasticsearch: Error in converting disk_tot_mb for node %s '
-                                      'due to %s' % (self.node_name, str(err)))
+                                       'due to %s' % (self.node_name, str(err)))
 
                     shards = 0
                     try:
                         shards = disk_metrics['shards']
                     except KeyError as kerr:
                         collectd.error('Plugin elasticsearch: Error getting shards for node %s '
-                                      ': %s' % (self.node_name, kerr.message))
+                                       ': %s' % (self.node_name, kerr.message))
 
                     disk_available_mb = 0
                     try:
                         disk_available_mb = disk_metrics['disk.avail']
                     except KeyError as kerr:
                         collectd.error('Plugin elasticsearch: Error getting disk_available_mb for node %s '
-                                      ': %s' % (self.node_name, kerr.message))
+                                       ': %s' % (self.node_name, kerr.message))
 
                     disk_available = 0.0
                     try:
                         disk_available = round(int(disk_available_mb) / 1024.0, 2)
                     except Exception as err:
                         collectd.error('Plugin elasticsearch: Error in converting disk_available_mb for node %s '
-                                      'due to %s' % (self.node_name, str(err)))
+                                       'due to %s' % (self.node_name, str(err)))
 
                     disk_used_mb = 0
                     try:
                         disk_used_mb = disk_metrics['disk.used']
                     except KeyError as kerr:
                         collectd.error('Plugin elasticsearch: Error getting disk_used_mb for node %s '
-                                      ': %s' % (self.node_name, kerr.message))
+                                       ': %s' % (self.node_name, kerr.message))
 
                     disk_used = 0.0
                     try:
                         disk_used = round(int(disk_used_mb) / 1024.0, 2)
                     except Exception as err:
                         collectd.error('Plugin elasticsearch: Error in converting disk_used_mb for node %s '
-                                      'due to %s' % (self.node_name, str(err)))
+                                       'due to %s' % (self.node_name, str(err)))
 
                     disk_percent = 0
                     try:
                         disk_percent = int(disk_metrics['disk.percent'])
                     except KeyError as kerr:
                         collectd.error('Plugin elasticsearch: Error getting disk_percent for node %s '
-                                      ': %s' % (self.node_name, kerr.message))
+                                       ': %s' % (self.node_name, kerr.message))
 
                     disk_indices_mb = 0
                     try:
                         disk_indices_mb = disk_metrics['disk.indices']
                     except KeyError as kerr:
                         collectd.error('Plugin elasticsearch: Error getting disk_indices_mb for node %s '
-                                      ': %s' % (self.node_name, kerr.message))
+                                       ': %s' % (self.node_name, kerr.message))
 
                     disk_indices = 0.0
                     try:
                         disk_indices = round(int(disk_indices_mb) / 1024.0, 2)
                     except Exception as err:
                         collectd.error('Plugin elasticsearch: Error in converting disk_indices_mb for node %s '
-                                      'due to %s' % (self.node_name, str(err)))
+                                       'due to %s' % (self.node_name, str(err)))
 
                     disk_stats.update({'shards': shards,
                                        'diskTot': disk_tot,
@@ -1183,7 +1203,7 @@ class ElasticsearchStats(object):
                                        'diskPercentUsed': disk_percent,
                                        'diskIndices': disk_indices,
                                        'nodeUpTime': str(uptime)
-                                      })
+                                       })
         return disk_stats
 
     def get_cluster_stats(self):
@@ -1198,7 +1218,7 @@ class ElasticsearchStats(object):
             health = self.es.cluster.health()
         except ESException as es_err:
             collectd.error('Plugin elasticsearch: ElasticSearchExcpetion: Error collecting '
-                          'stats for cluster : %s' % es_err.message)
+                           'stats for cluster : %s' % es_err.message)
             return None
         cluster_stats = {}
         node_count = 0
@@ -1265,7 +1285,6 @@ class ElasticsearchStats(object):
         except KeyError as kerr:
             collectd.error('Plugin elasticsearch: Error getting cache miss count : %s' % kerr.message)
 
-
         # We need hit and miss count since our previous poll
         if 'clusterStats' in self.previousData:
             hit_count = hits - self.previousData['clusterStats']['cluster_hit_count']
@@ -1281,7 +1300,7 @@ class ElasticsearchStats(object):
             self.previousData['clusterStats']['cluster_miss_count'] = misses
 
         if hit_count or miss_count:
-            hit_ratio = (hit_count * 100)/(hit_count + miss_count)
+            hit_ratio = (hit_count * 100) / (hit_count + miss_count)
         else:
             hit_ratio = 0
 
@@ -1360,32 +1379,32 @@ class ElasticsearchStats(object):
             collectd.error('Plugin elasticsearch: Error getting number of in flight fetch : %s' % kerr.message)
 
         try:
-            cluster_stats.update({'_documentType':'clusterStats',
-                                  'totalNodes':node_count,
-                                  '_clusterName':cluster_name,
-                                  'version':version,
-                                  'masterNodes':master_node_count,
-                                  'ingestNodes':data_node_count,
-                                  'dataNodes':ingest_node_count,
-                                  'indicesCount':index_count,
-                                  'docCount':document_count,
+            cluster_stats.update({'_documentType': 'clusterStats',
+                                  'totalNodes': node_count,
+                                  '_clusterName': cluster_name,
+                                  'version': version,
+                                  'masterNodes': master_node_count,
+                                  'ingestNodes': data_node_count,
+                                  'dataNodes': ingest_node_count,
+                                  'indicesCount': index_count,
+                                  'docCount': document_count,
                                   'shardCount': shard_count,
                                   'queryCacheHits': hit_count,
                                   'queryCacheMisses': miss_count,
-                                  'segCount':segment_count,
+                                  'segCount': segment_count,
                                   'clusterStatus': cluster_status,
-                                  'activePrimaryShards':active_primary_shards,
-                                  'activeShards':active_shards,
-                                  'relocatingShards':relocating_shards,
-                                  'initializingShards':initializing_shards,
-                                  'unassignedShards':unassigned_shards,
-                                  'delayedUnassignedShards':delayed_unassigned_shards,
-                                  'pendingTasksCount':number_of_pending_tasks,
-                                  'inflightFetchCount':number_of_in_flight_fetch,
+                                  'activePrimaryShards': active_primary_shards,
+                                  'activeShards': active_shards,
+                                  'relocatingShards': relocating_shards,
+                                  'initializingShards': initializing_shards,
+                                  'unassignedShards': unassigned_shards,
+                                  'delayedUnassignedShards': delayed_unassigned_shards,
+                                  'pendingTasksCount': number_of_pending_tasks,
+                                  'inflightFetchCount': number_of_in_flight_fetch,
                                   'queryCacheSize': cache_size,
                                   'queryCacheHitRatio': int(hit_ratio),
                                   'storeSize': store_size_in_bytes
-                                 })
+                                  })
             return cluster_stats
         except KeyError as kerror:
             collectd.error('KeyError updating stats for the cluster : %s' % kerror.message)
@@ -1431,129 +1450,134 @@ class ElasticsearchStats(object):
             except KeyError as err:
                 collectd.error('Plugin elasticsearch: Error in getting index settings details: %s' % err.message)
                 continue
-            #setting every flag to default value used by es
-            #case 1:
+            # setting every flag to default value used by es
+            # case 1:
             #   if read_only_allow_delete  is true=>Index isn't writable and is read-only.Index can be deleted
             #   This happens when disk usage is above threshold
             # case 2:
             #    If read_only is only set=> Data write is disabled,Index and meta data cant be deleted
-            #If both or set,read_only property is only reflecting
+            # If both or set,read_only property is only reflecting
             index_read_only_allow_delete = False
             index_write = False
             index_read_only = False
             if settings_details:
                 index_write = settings_details.get('write', False)
-                if "read_only_allow_delete" in settings_details.keys() and str(settings_details["read_only_allow_delete"])=="true":
+                if "read_only_allow_delete" in settings_details.keys() and str(
+                        settings_details["read_only_allow_delete"]) == "true":
                     index_read_only_allow_delete = True
                     index_write = True
                     index_read_only = True
-                if "read_only" in settings_details.keys() and str(settings_details["read_only"])=="true":
+                if "read_only" in settings_details.keys() and str(settings_details["read_only"]) == "true":
                     index_read_only_allow_delete = False
                     index_write = True
                     index_read_only = True
-                    
+
             index_creation_date = None
             if index != "_all":
-                
+
                 try:
                     index_creation_date = index_settings[index]['settings']['index'].get('creation_date')
                 except KeyError as ex:
-                    collectd.error('Plugin elasticsearch: Error fetching index creation date for index %s : %s' % (index, ex.message))
+                    collectd.error('Plugin elasticsearch: Error fetching index creation date for index %s : %s' % (
+                    index, ex.message))
 
             document_count = None
             try:
                 document_count = int(index_details['docs']['count'])
             except KeyError as ex:
-                collectd.error('Plugin elasticsearch: Error fetching document count for index %s : %s' % (index, ex.message))
+                collectd.error(
+                    'Plugin elasticsearch: Error fetching document count for index %s : %s' % (index, ex.message))
 
             documents_deleted = None
             try:
                 documents_deleted = int(index_details['docs']['deleted'])
             except KeyError as ex:
-                collectd.error('Plugin elasticsearch: Error fetching deleted document count for index %s : %s' % (index, ex.message))
+                collectd.error('Plugin elasticsearch: Error fetching deleted document count for index %s : %s' % (
+                index, ex.message))
 
             total_indexed_count = 0
             try:
                 total_indexed = int(index_details['indexing']['index_total'])
             except KeyError as ex:
-                collectd.error('Plugin elasticsearch: Error fetching Total indexing count for index %s : %s' % (index, ex.message))
+                collectd.error(
+                    'Plugin elasticsearch: Error fetching Total indexing count for index %s : %s' % (index, ex.message))
 
             total_deleted = None
             try:
                 total_deleted = int(index_details['indexing']['delete_total'])
             except KeyError as ex:
                 collectd.error('Plugin elasticsearch: Error fetching Total indexing delete count '
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             is_throttled = None
             try:
                 is_throttled = index_details['indexing']['is_throttled']
             except KeyError as ex:
                 collectd.error('Plugin elasticsearch: Error fetching throttle status '
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             total_get_query_count = 0
             try:
                 total_get_query = int(index_details['get']['total'])
             except KeyError as ex:
                 collectd.error('Plugin elasticsearch: Error fetching total get query count'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             total_search_query_count = 0
             try:
                 total_search_query = int(index_details['search']['query_total'])
             except KeyError as ex:
                 collectd.error('Plugin elasticsearch: Error fetching total search query count'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             total_search_fetch_count = 0
             try:
                 total_search_fetch = int(index_details['search']['fetch_total'])
             except KeyError as ex:
                 collectd.error('Plugin elasticsearch: Error fetching total search fetch count'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             total_refresh_count = 0
             try:
                 total_refresh = int(index_details['refresh']['total'])
             except KeyError as ex:
                 collectd.error('Plugin elasticsearch: Error fetching total refresh query count'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             total_merge_query_count = 0
             try:
                 total_merge_query = int(index_details['merges']['total'])
             except KeyError as ex:
                 collectd.error('Plugin elasticsearch: Error fetching total merge query count'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             total_warmer_count = None
             try:
                 total_warmer_count = int(index_details['warmer']['total'])
             except KeyError as ex:
                 collectd.error('Plugin elasticsearch: Error fetching total warmer count'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             total_flush_count = 0
             try:
                 total_flush = int(index_details['flush']['total'])
             except KeyError as ex:
                 collectd.error('Plugin elasticsearch: Error fetching total flush count'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             total_segment_count = None
             try:
                 total_segment_count = int(index_details['segments']['count'])
             except KeyError as ex:
                 collectd.error('Plugin elasticsearch: Error fetching total segment count'
-                              'for index%s : %s' % (index, ex.message))
+                               'for index%s : %s' % (index, ex.message))
 
             total_translog_operations = None
             try:
                 total_translog_operations = int(index_details['translog']['operations'])
             except KeyError as ex:
                 collectd.error('Plugin elasticsearch: Error fetching total translog operations'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             store_size_in_mb = None
             try:
@@ -1561,99 +1585,99 @@ class ElasticsearchStats(object):
                 store_size_in_mb = round(self.conv_b_to_mb(float(store_size_in_bytes)), 2)
             except KeyError as ex:
                 collectd.error('Plugin elasticsearch: Error fetching index store size'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             total_indexing_time = None
             try:
-                #total_indexing_time_in_millis = index_details['indexing']['index_time_in_millis']
-                #total_indexing_time = round(float(total_indexing_time_in_millis) / 1000, 2)
+                # total_indexing_time_in_millis = index_details['indexing']['index_time_in_millis']
+                # total_indexing_time = round(float(total_indexing_time_in_millis) / 1000, 2)
                 total_indexing_time = index_details['indexing']['index_time_in_millis']
             except KeyError as ex:
                 collectd.error('Plugin elasticsearch: Error fetching total indexing time'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             total_deleting_time = None
             try:
-                #total_deleting_time_in_millis = index_details['indexing']['delete_time_in_millis']
-                #total_deleting_time = round(float(total_deleting_time_in_millis) / 1000, 2)
+                # total_deleting_time_in_millis = index_details['indexing']['delete_time_in_millis']
+                # total_deleting_time = round(float(total_deleting_time_in_millis) / 1000, 2)
                 total_deleting_time = index_details['indexing']['delete_time_in_millis']
             except KeyError as ex:
                 collectd.error('Plugin elasticsearch: Error fetching total deleting time'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             total_throttle_time = None
             try:
-                #total_throttle_time_in_millis = index_details['indexing']['throttle_time_in_millis']
-                #total_throttle_time = round(float(total_throttle_time_in_millis) / 1000, 2)
+                # total_throttle_time_in_millis = index_details['indexing']['throttle_time_in_millis']
+                # total_throttle_time = round(float(total_throttle_time_in_millis) / 1000, 2)
                 total_throttle_time = index_details['indexing']['throttle_time_in_millis']
             except KeyError as ex:
                 collectd.error('Plugin elasticsearch: Error fetching total throttle time'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             total_get_query_time = None
             try:
-                #total_get_query_time_in_millis = index_details['get']['time_in_millis']
-                #total_get_query_time = round(float(total_get_query_time_in_millis) / 1000, 2)
+                # total_get_query_time_in_millis = index_details['get']['time_in_millis']
+                # total_get_query_time = round(float(total_get_query_time_in_millis) / 1000, 2)
                 total_get_query_time = index_details['get']['time_in_millis']
             except KeyError as ex:
                 collectd.error('Plugin elasticsearch: Error fetching total get query time'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             search_query_latency = None
             total_search_query_time = None
             try:
-                #total_search_query_time_in_millis = index_details['search']['query_time_in_millis']
-                #total_search_query_time = round(float(total_search_query_time_in_millis) / 1000, 2)
+                # total_search_query_time_in_millis = index_details['search']['query_time_in_millis']
+                # total_search_query_time = round(float(total_search_query_time_in_millis) / 1000, 2)
                 total_search_query_time = index_details['search']['query_time_in_millis']
             except KeyError as ex:
                 collectd.error('Plugin elasticsearch: Error fetching total search query time'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             search_fetch_latency = None
             total_search_fetch_time = None
             try:
-                #total_search_fetch_time_in_millis = index_details['search']['fetch_time_in_millis']
-                #total_search_fetch_time = round(float(total_search_fetch_time_in_millis) / 1000, 2)
+                # total_search_fetch_time_in_millis = index_details['search']['fetch_time_in_millis']
+                # total_search_fetch_time = round(float(total_search_fetch_time_in_millis) / 1000, 2)
                 total_search_fetch_time = index_details['search']['fetch_time_in_millis']
             except KeyError as ex:
                 collectd.error('Plugin elasticsearch: Error fetching total search fetch time'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             total_merge_query_time = None
             try:
-                #total_merge_query_time_in_millis = index_details['merges']['total_time_in_millis']
-                #total_merge_query_time = round(float(total_merge_query_time_in_millis) / 1000, 2)
+                # total_merge_query_time_in_millis = index_details['merges']['total_time_in_millis']
+                # total_merge_query_time = round(float(total_merge_query_time_in_millis) / 1000, 2)
                 total_merge_query_time = index_details['merges']['total_time_in_millis']
             except KeyError as ex:
                 collectd.error('Plugin elasticsearch: Error fetching total merge query time'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             total_refresh_time = None
             try:
-                #total_refresh_time_in_millis = index_details['refresh']['total_time_in_millis']
-                #total_refresh_time = round(float(total_refresh_time_in_millis) / 1000, 2)
+                # total_refresh_time_in_millis = index_details['refresh']['total_time_in_millis']
+                # total_refresh_time = round(float(total_refresh_time_in_millis) / 1000, 2)
                 total_refresh_time = index_details['refresh']['total_time_in_millis']
             except KeyError as ex:
                 collectd.error('Plugin elasticsearch: Error fetching total refresh time'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             total_warmer_time = None
             try:
-                #total_warmer_time_in_millis = index_details['warmer']['total_time_in_millis']
-                #total_warmer_time = round(float(total_warmer_time_in_millis) / 1000, 2)
+                # total_warmer_time_in_millis = index_details['warmer']['total_time_in_millis']
+                # total_warmer_time = round(float(total_warmer_time_in_millis) / 1000, 2)
                 total_warmer_time = index_details['warmer']['total_time_in_millis']
             except KeyError as ex:
                 collectd.error('Plugin elasticsearch: Error fetching total warmer time'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             total_flush_time = None
             try:
-                #total_flush_time_in_millis = index_details['flush']['total_time_in_millis']
-                #total_flush_time = round(float(total_flush_time_in_millis) / 1000, 2)
+                # total_flush_time_in_millis = index_details['flush']['total_time_in_millis']
+                # total_flush_time = round(float(total_flush_time_in_millis) / 1000, 2)
                 total_flush_time = index_details['flush']['total_time_in_millis']
             except KeyError as ex:
                 collectd.error('Plugin elasticsearch: Error fetching total warmer time'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             query_cache_size_in_mb = None
             try:
@@ -1661,14 +1685,14 @@ class ElasticsearchStats(object):
                 query_cache_size_in_mb = round(float(query_cache_size_in_bytes) / 1024, 2)
             except KeyError as ex:
                 collectd.error('Plugin elasticsearch: Error fetching query cache size'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             query_cache_size = None
             try:
                 query_cache_size = index_details['query_cache']['cache_size']
             except KeyError as ex:
                 collectd.error('Plugin elasticsearch: Error fetching query cache size'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             field_data_memory_size_in_mb = None
             try:
@@ -1676,14 +1700,14 @@ class ElasticsearchStats(object):
                 field_data_memory_size_in_mb = round(float(field_data_memory_in_bytes) / 1024, 2)
             except Exception as ex:
                 collectd.error('Plugin elasticsearch: Error fetching field data memory size'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             field_data_evictions = None
             try:
                 field_data_evictions = index_details['fielddata']['evictions']
             except Exception as ex:
                 collectd.error('Plugin elasticsearch: Error fetching field data evictions'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             segment_memory_in_mb = None
             try:
@@ -1691,7 +1715,7 @@ class ElasticsearchStats(object):
                 segment_memory_in_mb = round(float(segment_memory_in_bytes) / 1024, 2)
             except Exception as ex:
                 collectd.error('Plugin elasticsearch: Error fetching segment memory size'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             segment_terms_memory_in_mb = None
             try:
@@ -1699,7 +1723,7 @@ class ElasticsearchStats(object):
                 segment_terms_memory_in_mb = round(float(segment_terms_memory_in_bytes) / 1024, 2)
             except Exception as ex:
                 collectd.error('Plugin elasticsearch: Error fetching segment terms memory size'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             segment_stored_fileds_memory_in_mb = None
             try:
@@ -1707,7 +1731,7 @@ class ElasticsearchStats(object):
                 segment_stored_fileds_memory_in_mb = round(float(segment_stored_fileds_memory_in_bytes) / 1024, 2)
             except Exception as ex:
                 collectd.error('Plugin elasticsearch: Error fetching segment stored field memory size'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             segment_terms_vector_memory_in_mb = None
             try:
@@ -1715,7 +1739,7 @@ class ElasticsearchStats(object):
                 segment_terms_vector_memory_in_mb = round(float(segment_terms_vector_memory_in_bytes) / 1024, 2)
             except Exception as ex:
                 collectd.error('Plugin elasticsearch: Error fetching segment terms vector memory size'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             segment_norms_memory_in_mb = None
             try:
@@ -1723,7 +1747,7 @@ class ElasticsearchStats(object):
                 segment_norms_memory_in_mb = round(float(segment_norms_memory_in_bytes) / 1024, 2)
             except Exception as ex:
                 collectd.error('Plugin elasticsearch: Error fetching segment norms memory size'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             segment_points_memory_in_mb = None
             try:
@@ -1731,7 +1755,7 @@ class ElasticsearchStats(object):
                 segment_points_memory_in_mb = round(float(segment_points_memory_in_bytes) / 1024, 2)
             except Exception as ex:
                 collectd.error('Plugin elasticsearch: Error fetching segment norms memory size'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             segment_docvalues_memory_in_mb = None
             try:
@@ -1739,7 +1763,7 @@ class ElasticsearchStats(object):
                 segment_docvalues_memory_in_mb = round(float(segment_docvalues_memory_in_bytes) / 1024, 2)
             except Exception as ex:
                 collectd.error('Plugin elasticsearch: Error fetching doc values memory size'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             segment_indexwriter_memory_in_mb = None
             try:
@@ -1747,7 +1771,7 @@ class ElasticsearchStats(object):
                 segment_indexwriter_memory_in_mb = round(float(segment_indexwriter_memory_in_bytes) / 1024, 2)
             except Exception as ex:
                 collectd.error('Plugin elasticsearch: Error fetching index writer memory size'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             segment_versionmap_memory_in_mb = None
             try:
@@ -1755,7 +1779,7 @@ class ElasticsearchStats(object):
                 segment_versionmap_memory_in_mb = round(float(segment_versionmap_memory_in_bytes) / 1024, 2)
             except Exception as ex:
                 collectd.error('Plugin elasticsearch: Error fetching doc values memory size'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             segment_fixbitset_memory_in_mb = None
             try:
@@ -1763,7 +1787,7 @@ class ElasticsearchStats(object):
                 segment_fixbitset_memory_in_mb = round(float(segment_fixbitset_memory_in_bytes) / 1024, 2)
             except Exception as ex:
                 collectd.error('Plugin elasticsearch: Error fetching fixed bit set memory size'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             translog_size_in_mb = None
             try:
@@ -1771,7 +1795,7 @@ class ElasticsearchStats(object):
                 translog_size_in_mb = round(float(translog_size_in_bytes) / 1024, 2)
             except Exception as ex:
                 collectd.error('Plugin elasticsearch: Error fetching translog size'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             request_cache_memory_size_in_mb = None
             try:
@@ -1779,69 +1803,76 @@ class ElasticsearchStats(object):
                 request_cache_memory_size_in_mb = round(float(request_cache_memory_size_in_bytes) / 1024, 2)
             except Exception as ex:
                 collectd.error('Plugin elasticsearch: Error fetching request cache memory size'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             query_cache_hit_count = None
             try:
                 query_cache_hits = index_details['query_cache']['hit_count']
             except KeyError as err:
                 collectd.error('Plugin elasticsearch: Error fetching query cache hits count'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             query_cache_miss_count = None
             try:
                 query_cache_misses = index_details['query_cache']['miss_count']
             except KeyError as err:
                 collectd.error('Plugin elasticsearch: Error fetching query cache miss count'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             request_cache_hit_count = None
             try:
                 request_cache_hits = index_details['request_cache']['hit_count']
             except KeyError as err:
                 collectd.error('Plugin elasticsearch: Error fetching query cache hits count'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
             request_cache_miss_count = None
             try:
                 request_cache_misses = index_details['request_cache']['miss_count']
             except KeyError as err:
                 collectd.error('Plugin elasticsearch: Error fetching query cache miss count'
-                              'for index %s : %s' % (index, ex.message))
+                               'for index %s : %s' % (index, ex.message))
 
-            if 'indexStats' in self.previousData and index in self.previousData['indexStats'] and not self.pollCounter == 1:
+            if 'indexStats' in self.previousData and index in self.previousData[
+                'indexStats'] and not self.pollCounter == 1:
                 try:
                     doc_del_count = documents_deleted - self.previousData['indexStats'][index]['documents_deleted']
                     if doc_del_count < 0:
                         doc_del_count = 0
                     self.previousData['indexStats'][index]['documents_deleted'] = documents_deleted
 
-                    query_cache_hit_count = query_cache_hits - self.previousData['indexStats'][index]['query_cache_hits']
+                    query_cache_hit_count = query_cache_hits - self.previousData['indexStats'][index][
+                        'query_cache_hits']
                     if query_cache_hit_count < 0:
                         query_cache_hit_count = 0
                     self.previousData['indexStats'][index]['query_cache_hits'] = query_cache_hits
 
-                    query_cache_miss_count = query_cache_misses - self.previousData['indexStats'][index]['query_cache_misses']
+                    query_cache_miss_count = query_cache_misses - self.previousData['indexStats'][index][
+                        'query_cache_misses']
                     if query_cache_miss_count < 0:
                         query_cache_miss_count = 0
                     self.previousData['indexStats'][index]['query_cache_misses'] = query_cache_misses
 
-                    request_cache_hit_count = request_cache_hits - self.previousData['indexStats'][index]['request_cache_hits']
+                    request_cache_hit_count = request_cache_hits - self.previousData['indexStats'][index][
+                        'request_cache_hits']
                     if request_cache_hit_count < 0:
                         request_cache_hit_count = 0
                     self.previousData['indexStats'][index]['request_cache_hits'] = request_cache_hits
 
-                    request_cache_miss_count = request_cache_misses - self.previousData['indexStats'][index]['request_cache_misses']
+                    request_cache_miss_count = request_cache_misses - self.previousData['indexStats'][index][
+                        'request_cache_misses']
                     if request_cache_miss_count < 0:
                         request_cache_miss_count = 0
                     self.previousData['indexStats'][index]['request_cache_misses'] = request_cache_misses
 
-                    total_get_query_count = total_get_query - self.previousData['indexStats'][index]['total_get_query_count']
+                    total_get_query_count = total_get_query - self.previousData['indexStats'][index][
+                        'total_get_query_count']
                     if total_get_query_count < 0:
                         total_get_query_count = 0
                     self.previousData['indexStats'][index]['total_get_query_count'] = total_get_query
 
-                    total_merge_query_count = total_merge_query - self.previousData['indexStats'][index]['total_merge_query_count']
+                    total_merge_query_count = total_merge_query - self.previousData['indexStats'][index][
+                        'total_merge_query_count']
                     if total_merge_query_count < 0:
                         total_merge_query_count = 0
                     self.previousData['indexStats'][index]['total_merge_query_count'] = total_merge_query
@@ -1861,69 +1892,86 @@ class ElasticsearchStats(object):
                         total_flush_count = 0
                     self.previousData['indexStats'][index]['total_flush_count'] = total_flush
 
-                    total_search_query_count = total_search_query - self.previousData['indexStats'][index]['total_search_query_count']
+                    total_search_query_count = total_search_query - self.previousData['indexStats'][index][
+                        'total_search_query_count']
                     if total_search_query_count < 0:
                         total_search_query_count = 0
                     self.previousData['indexStats'][index]['total_search_query_count'] = total_search_query
 
-                    total_search_fetch_count = total_search_fetch - self.previousData['indexStats'][index]['total_search_fetch_count']
+                    total_search_fetch_count = total_search_fetch - self.previousData['indexStats'][index][
+                        'total_search_fetch_count']
                     if total_search_fetch_count < 0:
                         total_search_fetch_count = 0
                     self.previousData['indexStats'][index]['total_search_fetch_count'] = total_search_fetch
 
-                    total_get_query_diff_time = round(total_get_query_time - self.previousData['indexStats'][index]['total_get_query_time'], 2)
+                    total_get_query_diff_time = round(
+                        total_get_query_time - self.previousData['indexStats'][index]['total_get_query_time'], 2)
                     if total_get_query_diff_time < 0:
                         total_get_query_diff_time = 0
                     self.previousData['indexStats'][index]['total_get_query_time'] = total_get_query_time
 
-                    total_merge_query_diff_time = round(total_merge_query_time - self.previousData['indexStats'][index]['total_merge_query_time'], 2)
+                    total_merge_query_diff_time = round(
+                        total_merge_query_time - self.previousData['indexStats'][index]['total_merge_query_time'], 2)
                     if total_merge_query_diff_time < 0:
                         total_merge_query_diff_time = 0
                     self.previousData['indexStats'][index]['total_merge_query_time'] = total_merge_query_time
 
-                    total_refresh_diff_time = round(total_refresh_time - self.previousData['indexStats'][index]['total_refresh_time'], 2)
+                    total_refresh_diff_time = round(
+                        total_refresh_time - self.previousData['indexStats'][index]['total_refresh_time'], 2)
                     if total_refresh_diff_time < 0:
                         total_refresh_diff_time = 0
                     self.previousData['indexStats'][index]['total_refresh_time'] = total_refresh_time
 
-                    total_indexed_diff_time = round(total_indexing_time - self.previousData['indexStats'][index]['total_indexing_time'], 2)
+                    total_indexed_diff_time = round(
+                        total_indexing_time - self.previousData['indexStats'][index]['total_indexing_time'], 2)
                     if total_indexed_diff_time < 0:
                         total_indexed_diff_time = 0
                     self.previousData['indexStats'][index]['total_indexing_time'] = total_indexing_time
 
-                    total_flush_diff_time = round(total_flush_time - self.previousData['indexStats'][index]['total_flush_time'], 2)
+                    total_flush_diff_time = round(
+                        total_flush_time - self.previousData['indexStats'][index]['total_flush_time'], 2)
                     if total_flush_diff_time < 0:
                         total_flush_diff_time = 0
                     self.previousData['indexStats'][index]['total_flush_time'] = total_flush_time
 
-                    total_search_query_diff_time = round(total_search_query_time - self.previousData['indexStats'][index]['total_search_query_time'], 2)
+                    total_search_query_diff_time = round(
+                        total_search_query_time - self.previousData['indexStats'][index]['total_search_query_time'], 2)
                     if total_search_query_diff_time < 0:
                         total_search_query_diff_time = 0
                     self.previousData['indexStats'][index]['total_search_query_time'] = total_search_query_time
 
-                    total_search_fetch_diff_time = round(total_search_fetch_time - self.previousData['indexStats'][index]['total_search_fetch_time'], 2)
+                    total_search_fetch_diff_time = round(
+                        total_search_fetch_time - self.previousData['indexStats'][index]['total_search_fetch_time'], 2)
                     if total_search_fetch_diff_time < 0:
                         total_search_fetch_diff_time = 0
                     self.previousData['indexStats'][index]['total_search_fetch_time'] = total_search_fetch_time
 
                     try:
-                        search_query_latency = round((total_search_query - self.previousData['indexStats'][index]['total_search_query_count']) / (
-                                                total_search_query_time - self.previousData['indexStats'][index]['total_search_query_time']), 2)
+                        search_query_latency = round((total_search_query - self.previousData['indexStats'][index][
+                            'total_search_query_count']) / (
+                                                             total_search_query_time -
+                                                             self.previousData['indexStats'][index][
+                                                                 'total_search_query_time']), 2)
                         if search_query_latency < 0:
                             search_query_latency = 0.0
                     except ZeroDivisionError as err:
                         search_query_latency = 0.0
 
                     try:
-                        search_fetch_latency = round((total_search_fetch - self.previousData['indexStats'][index]['total_search_fetch_count']) / (
-                                                total_search_fetch_time - self.previousData['indexStats'][index]['total_search_fetch_time']), 2)
+                        search_fetch_latency = round((total_search_fetch - self.previousData['indexStats'][index][
+                            'total_search_fetch_count']) / (
+                                                             total_search_fetch_time -
+                                                             self.previousData['indexStats'][index][
+                                                                 'total_search_fetch_time']), 2)
                         if search_fetch_latency < 0:
                             search_fetch_latency = 0.0
                     except ZeroDivisionError as err:
                         search_fetch_latency = 0.0
 
                 except Exception as err:
-                    collectd.error("Plugin Elasticsearch: Exception in finding difference value of index stats due to %s" % str(err))
+                    collectd.error(
+                        "Plugin Elasticsearch: Exception in finding difference value of index stats due to %s" % str(
+                            err))
             else:
                 total_get_query_diff_time = 0
                 total_merge_query_diff_time = 0
@@ -1943,32 +1991,32 @@ class ElasticsearchStats(object):
                     self.previousData['indexStats'] = {}
 
                 self.previousData['indexStats'].update({index: {'query_cache_hits': query_cache_hits,
-                                                  'query_cache_misses': query_cache_misses,
-                                                  'request_cache_hits': request_cache_hits,
-                                                  'request_cache_misses': request_cache_misses,
-                                                  'total_search_query_count': total_search_query,
-                                                  'total_search_fetch_count': total_search_fetch,
-                                                  'total_get_query_count': total_get_query,
-                                                  'total_merge_query_count': total_merge_query,
-                                                  'total_refresh_count': total_refresh,
-                                                  'total_indexed_count': total_indexed,
-                                                  'total_flush_count': total_flush,
-                                                  'total_get_query_time': total_get_query_time,
-                                                  'total_merge_query_time': total_merge_query_time,
-                                                  'total_refresh_time': total_refresh_time,
-                                                  'total_indexing_time': total_indexing_time,
-                                                  'total_flush_time': total_flush_time,
-                                                  'total_search_query_time': total_search_query_time,
-                                                  'total_search_fetch_time': total_search_fetch_time,
-                                                  'documents_deleted': documents_deleted
+                                                                'query_cache_misses': query_cache_misses,
+                                                                'request_cache_hits': request_cache_hits,
+                                                                'request_cache_misses': request_cache_misses,
+                                                                'total_search_query_count': total_search_query,
+                                                                'total_search_fetch_count': total_search_fetch,
+                                                                'total_get_query_count': total_get_query,
+                                                                'total_merge_query_count': total_merge_query,
+                                                                'total_refresh_count': total_refresh,
+                                                                'total_indexed_count': total_indexed,
+                                                                'total_flush_count': total_flush,
+                                                                'total_get_query_time': total_get_query_time,
+                                                                'total_merge_query_time': total_merge_query_time,
+                                                                'total_refresh_time': total_refresh_time,
+                                                                'total_indexing_time': total_indexing_time,
+                                                                'total_flush_time': total_flush_time,
+                                                                'total_search_query_time': total_search_query_time,
+                                                                'total_search_fetch_time': total_search_fetch_time,
+                                                                'documents_deleted': documents_deleted
 
-                                         }})
+                                                                }})
 
             single_index_stats.update({str(index): {'_documentType': 'indexStats',
                                                     'indexName': str(index),
                                                     'docCount': document_count,
-                                                    'docsDeleted':doc_del_count,
-                                                    'storeSize':store_size_in_mb,
+                                                    'docsDeleted': doc_del_count,
+                                                    'storeSize': store_size_in_mb,
                                                     'totalIndexed': total_indexed_count,
                                                     'totalIndexedTime': total_indexed_diff_time,
                                                     'totalDeletes': total_deleted,
@@ -2017,7 +2065,7 @@ class ElasticsearchStats(object):
                                                     'indexReadOnly': index_read_only,
                                                     'indexReadOnlyAllowDelete': index_read_only_allow_delete,
                                                     'indexCreationDate': index_creation_date
-                                      }})
+                                                    }})
             index_stats.update(single_index_stats)
         return index_stats
 
@@ -2032,7 +2080,7 @@ class ElasticsearchStats(object):
             health_details = self.es.cat.indices(format='json', h=['index', 'status', 'health'])
         except ESException as es_err:
             collectd.error('Plugin Elasticsearch: ElasticSearchExcpetion: Error collecting '
-                          'health for indices : due to %s' % es_err.message)
+                           'health for indices : due to %s' % es_err.message)
             return None
         health_stats = {}
         single_health_stats = {}
@@ -2044,7 +2092,8 @@ class ElasticsearchStats(object):
                     single_health_stats.update({str(index_name): {"indexHealth": index_health}})
                     health_stats.update(single_health_stats)
             except Exception as err:
-                collectd.error("Plugin elasticsearch: Error in getting health stats for indices due to %s" % err.message)
+                collectd.error(
+                    "Plugin elasticsearch: Error in getting health stats for indices due to %s" % err.message)
             return health_stats
         else:
             collectd.error("Plugin elasticsearch: No health stats found for indices ")
@@ -2100,7 +2149,8 @@ class ElasticsearchStats(object):
             self.pollCounter += 1
             if self.pollCounter <= 1:
                 connection = "{}://{}:{}".format(str(self.es_protocol), str(self.host), str(self.port))
-                self.es = ESearch([connection], verify_certs=False, connection_class=RequestsHttpConnection, timeout=90, http_auth=(self.es_username, self.es_password))
+                self.es = ESearch([connection], verify_certs=False, connection_class=RequestsHttpConnection, timeout=90,
+                                  http_auth=(self.es_username, self.es_password))
 
             if self.ping_server():
                 es_stats = self.collect_es_data()
@@ -2137,4 +2187,3 @@ def init():
 obj = ElasticsearchStats()
 collectd.register_config(obj.read_config)
 collectd.register_read(obj.read_temp)
-
